@@ -240,3 +240,13 @@ object SparkSQL extends App with Context{
         |on t.id = q.id""".stripMargin)
     .show(10)
 }
+
+
+def entropy(counts: Iterable[Int]): Double = {
+  val values = counts.filter(_ > 0)
+  val n = values.map(_.toDouble).sum
+  values.map { v => 
+    val p = v / n
+    -p * math.log(p)
+  }.sum
+}
