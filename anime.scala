@@ -32,3 +32,16 @@ categories.foreach {col =>
   df = df.withColumn(col, array_contains(split($"cate_list", ","), col).cast("int"))
 } */
 
+var rating = spark.read.option("inferSchema", "true").option("header", "true").csv("anime/rating.csv")
+var anime = spark.read.option("inferSchema", "true").option("header", "true").csv("anime/anime.csv")
+anime = anime.withColumnRenamed("rating", "web_rating").drop("rating")
+// anime = anime.withColumnRenamed("anime_id", "anime_id_2").drop("anime_id")
+var data = rating.join(anime, Seq("anime_id"), "inner")
+data.columns.foreach(x => println(s"$x -> ${data.filter(data(x).isNull).count}"))  // find NAs
+data = data.na.fill("Missing", Seq("genre"))
+data.groupBy("type").count().orderBy($"count".desc).show()
+data = data.na.fill("Missing", Seq("type"))
+data.selectExpr("avg(web_rating)").show()
+data = data.na.fill(7.6, Seq("web_rating"))
+val data_columns = data.columns diff Array("rating")
+
