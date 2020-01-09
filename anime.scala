@@ -44,4 +44,7 @@ data = data.na.fill("Missing", Seq("type"))
 data.selectExpr("avg(web_rating)").show()
 data = data.na.fill(7.6, Seq("web_rating"))
 val data_columns = data.columns diff Array("rating")
-
+// filter NA samples
+val allCols: Array[Column] = data.columns.map(data.col)
+val nullFilter: Column = allCols.map(_.isNotNull).reduce(_ && _)
+data = data.select(allCols: _*).filter(nullFilter)
