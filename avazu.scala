@@ -89,5 +89,5 @@ evaluator.evaluate(testPredAndLabel)
 // val label = trainData.select("label").rdd.map(_.getInt(0))
 val label = trainData.select("label").rdd.map(_.getAs[Int]("label")).map(_.toDouble)
 val rawPrediction = lrModel.transform(trainData.select("featureVector")).select("rawPrediction")
-val prediction = rawPrediction.rdd.map(x => x(0)).map(x => x.asInstanceOf[DenseVector].toArray).map(x => x(1))
+val prediction = rawPrediction.rdd.map(x => x(0)).map(x => x.asInstanceOf[DenseVector].toArray).map(x => x(1))  // x(1) refers to label 1.0
 val auc = new BinaryClassificationMetrics(prediction.zip(label)).areaUnderROC
