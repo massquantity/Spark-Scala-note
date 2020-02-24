@@ -1,4 +1,4 @@
-//user_behavior.csv
+//user_behavior.csv  Tianchi
 
 import org.apache.spark.sql.types.{StructField, StructType, StringType, IntegerType, TimestampType, LongType}
 val schema = StructType(Array(
